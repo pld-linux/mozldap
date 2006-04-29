@@ -89,19 +89,6 @@ export USE_64
 
 cd mozilla/directory/c-sdk
 %{__make} BUILDCLU=1 HAVE_SVRCORE=1 BUILD_OPT=1
-
-# Set up our package file
-install -d $RPM_BUILD_ROOT%{_libdir}/pkgconfig
-%{__cat} mozldap.pc.in | sed -e "s,%%libdir%%,%{_libdir},g" \
-						  -e "s,%%prefix%%,%{_prefix},g" \
-						  -e "s,%%exec_prefix%%,%{_prefix},g" \
-						  -e "s,%%includedir%%,%{_includedir}/mozldap,g" \
-						  -e "s,%%NSPR_VERSION%%,%{nspr_version},g" \
-						  -e "s,%%NSS_VERSION%%,%{nss_version},g" \
-						  -e "s,%%SVRCORE_VERSION%%,%{svrcore_version},g" \
-						  -e "s,%%MOZLDAP_VERSION%%,%{version},g" > \
-						  $RPM_BUILD_ROOT%{_libdir}/pkgconfig/mozldap.pc
-
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT%{_includedir}/mozldap
@@ -139,6 +126,20 @@ for file in libssldap50.so libprldap50.so libldap50.so; do
 	ln -s $file.%{major}.%{minor} $file.%{major}
 	ln -s $file.%{major} $file
 done
+
+# Set up our package file
+install -d $RPM_BUILD_ROOT%{_pkgconfigdir}
+sed mozldap.pc.in -e "
+	s,%%libdir%%,%{_libdir},g
+	s,%%prefix%%,%{_prefix},g
+	s,%%exec_prefix%%,%{_prefix},g
+	s,%%includedir%%,%{_includedir}/mozldap,g
+	s,%%NSPR_VERSION%%,%{nspr_version},g
+	s,%%NSS_VERSION%%,%{nss_version},g
+	s,%%SVRCORE_VERSION%%,%{svrcore_version},g
+	s,%%MOZLDAP_VERSION%%,%{version},g
+" > $RPM_BUILD_ROOT%{_pkgconfigdir}/mozldap.pc
+
 
 %clean
 rm -rf $RPM_BUILD_ROOT
