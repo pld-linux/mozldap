@@ -1,5 +1,7 @@
-%define	nspr_version	1:4.6
-%define	nss_version	1:3.11
+%define	nspr_version	4.6
+%define	nspr_evr 1:%{nspr_version}
+%define	nss_version	3.11
+%define	nss_evr 1:%{nss_version}
 %define	svrcore_version	4.0.1
 %define	major		5
 %define	minor		17
@@ -14,12 +16,12 @@ Source0:	ftp://ftp.mozilla.org/pub/mozilla.org/directory/c-sdk/releases/v%{major
 # Source0-md5	453341111111111
 URL:		http://www.mozilla.org/directory/csdk.html
 BuildRequires:	gawk
-BuildRequires:	nspr-devel >= %{nspr_version}
-BuildRequires:	nss-devel >= %{nss_version}
+BuildRequires:	nspr-devel >= %{nspr_evr}
+BuildRequires:	nss-devel >= %{nss_evr}
 BuildRequires:	pkgconfig
 BuildRequires:	svrcore-devel >= %{svrcore_version}
-Requires:	nspr >= %{nspr_version}
-Requires:	nss >= %{nss_version}
+Requires:	nspr >= %{nspr_evr}
+Requires:	nss >= %{nss_evr}
 Provides:	mozldap
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -32,8 +34,8 @@ They use Mozilla NSPR and NSS for crypto.
 %package tools
 Summary:	Tools for the Mozilla LDAP C SDK
 Group:		System
-BuildRequires:	nspr-devel >= %{nspr_version}
-BuildRequires:	nss-devel >= %{nss_version}
+BuildRequires:	nspr-devel >= %{nspr_evr}
+BuildRequires:	nss-devel >= %{nss_evr}
 BuildRequires:	svrcore-devel >= %{svrcore_version}
 Requires:	mozldap = %{version}-%{release}
 Provides:	mozldap-tools
@@ -45,8 +47,8 @@ ldapdelete tools that use the Mozilla LDAP C SDK libraries.
 %package devel
 Summary:	Development libraries and examples for Mozilla LDAP C SDK
 Group:		Development/Libraries
-BuildRequires:	nspr-devel >= %{nspr_version}
-BuildRequires:	nss-devel >= %{nss_version}
+BuildRequires:	nspr-devel >= %{nspr_evr}
+BuildRequires:	nss-devel >= %{nss_evr}
 Requires:	mozldap = %{version}-%{release}
 Provides:	mozldap-devel
 
