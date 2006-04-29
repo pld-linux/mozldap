@@ -14,7 +14,7 @@ Release:	0.1
 License:	MPL/GPL/LGPL
 Group:		System
 ######		Unknown group!
-Source0:	ftp://ftp.mozilla.org/pub/mozilla.org/directory/c-sdk/releases/v%{version}/src/ldapcsdk-%{version}.tar.gz
+Source0:	ftp://ftp.mozilla.org/pub/mozilla.org/directory/c-sdk/releases/v%{major}.17/src/ldapcsdk-%{version}.tar.gz
 # Source0-md5	453341111111111
 URL:		http://www.mozilla.org/directory/csdk.html
 Requires:	nspr >= %{nspr_version}
