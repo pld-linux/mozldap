@@ -34,9 +34,6 @@ They use Mozilla NSPR and NSS for crypto.
 %package tools
 Summary:	Tools for the Mozilla LDAP C SDK
 Group:		System
-BuildRequires:	nspr-devel >= %{nspr_evr}
-BuildRequires:	nss-devel >= %{nss_evr}
-BuildRequires:	svrcore-devel >= %{svrcore_version}
 Requires:	mozldap = %{version}-%{release}
 Provides:	mozldap-tools
 
@@ -47,8 +44,6 @@ ldapdelete tools that use the Mozilla LDAP C SDK libraries.
 %package devel
 Summary:	Development libraries and examples for Mozilla LDAP C SDK
 Group:		Development/Libraries
-BuildRequires:	nspr-devel >= %{nspr_evr}
-BuildRequires:	nss-devel >= %{nss_evr}
 Requires:	mozldap = %{version}-%{release}
 Provides:	mozldap-devel
 
