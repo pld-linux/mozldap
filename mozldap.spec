@@ -1,8 +1,5 @@
-#
-# TODO:
-# Conditional build:
-%define	nspr_version	4.6
-%define	nss_version	3.11
+%define	nspr_version	1:4.6
+%define	nss_version	1:3.11
 %define	svrcore_version	4.0.1
 %define	major		5
 %define	minor		17
@@ -13,17 +10,16 @@ Version:	%{major}.%{minor}
 Release:	0.1
 License:	MPL/GPL/LGPL
 Group:		System
-######		Unknown group!
 Source0:	ftp://ftp.mozilla.org/pub/mozilla.org/directory/c-sdk/releases/v%{major}.17/src/ldapcsdk-%{version}.tar.gz
 # Source0-md5	453341111111111
 URL:		http://www.mozilla.org/directory/csdk.html
-Requires:	nspr >= %{nspr_version}
-Requires:	nss >= %{nss_version}
+BuildRequires:	gawk
 BuildRequires:	nspr-devel >= %{nspr_version}
 BuildRequires:	nss-devel >= %{nss_version}
-BuildRequires:	svrcore-devel >= %{svrcore_version}
 BuildRequires:	pkgconfig
-BuildRequires:	gawk
+BuildRequires:	svrcore-devel >= %{svrcore_version}
+Requires:	nspr >= %{nspr_version}
+Requires:	nss >= %{nss_version}
 Provides:	mozldap
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -33,49 +29,35 @@ to communicate with LDAP directory servers. These libraries are
 derived from the University of Michigan and Netscape LDAP libraries.
 They use Mozilla NSPR and NSS for crypto.
 
-%description -l pl
-x
-
 %package tools
 Summary:	Tools for the Mozilla LDAP C SDK
 Group:		System
-######		Unknown group!
-Requires:	mozldap = %{version}-%{release}
 BuildRequires:	nspr-devel >= %{nspr_version}
 BuildRequires:	nss-devel >= %{nss_version}
 BuildRequires:	svrcore-devel >= %{svrcore_version}
+Requires:	mozldap = %{version}-%{release}
 Provides:	mozldap-tools
 
 %description tools
 The mozldap-tools package provides the ldapsearch, ldapmodify, and
 ldapdelete tools that use the Mozilla LDAP C SDK libraries.
 
-%description tools -l pl
-x
-
 %package devel
 Summary:	Development libraries and examples for Mozilla LDAP C SDK
 Group:		Development/Libraries
-Requires:	mozldap = %{version}-%{release}
 BuildRequires:	nspr-devel >= %{nspr_version}
 BuildRequires:	nss-devel >= %{nss_version}
+Requires:	mozldap = %{version}-%{release}
 Provides:	mozldap-devel
 
 %description devel
 Header and Library files for doing development with the Mozilla LDAP C
 SDK
 
-%description devel -l pl
-x
-
 %prep
-
 %setup -q
-#-n
-#cd mozilla/directory/c-sdk
 
 %build
-
 %ifarch x86_64 ppc64 ia64 s390x
 arg64="--enable-64bit"
 %endif
@@ -109,81 +91,72 @@ cd mozilla/directory/c-sdk
 %{__make} BUILDCLU=1 HAVE_SVRCORE=1 BUILD_OPT=1
 
 # Set up our package file
-%{__mkdir_p} $RPM_BUILD_ROOT/%{_libdir}/pkgconfig
+install -d $RPM_BUILD_ROOT%{_libdir}/pkgconfig
 %{__cat} mozldap.pc.in | sed -e "s,%%libdir%%,%{_libdir},g" \
-                          -e "s,%%prefix%%,%{_prefix},g" \
-                          -e "s,%%exec_prefix%%,%{_prefix},g" \
-                          -e "s,%%includedir%%,%{_includedir}/mozldap,g" \
-                          -e "s,%%NSPR_VERSION%%,%{nspr_version},g" \
-                          -e "s,%%NSS_VERSION%%,%{nss_version},g" \
-                          -e "s,%%SVRCORE_VERSION%%,%{svrcore_version},g" \
-                          -e "s,%%MOZLDAP_VERSION%%,%{version},g" > \
-                          $RPM_BUILD_ROOT/%{_libdir}/pkgconfig/mozldap.pc
+						  -e "s,%%prefix%%,%{_prefix},g" \
+						  -e "s,%%exec_prefix%%,%{_prefix},g" \
+						  -e "s,%%includedir%%,%{_includedir}/mozldap,g" \
+						  -e "s,%%NSPR_VERSION%%,%{nspr_version},g" \
+						  -e "s,%%NSS_VERSION%%,%{nss_version},g" \
+						  -e "s,%%SVRCORE_VERSION%%,%{svrcore_version},g" \
+						  -e "s,%%MOZLDAP_VERSION%%,%{version},g" > \
+						  $RPM_BUILD_ROOT%{_libdir}/pkgconfig/mozldap.pc
 
 %install
-# There is no make install target so we'll do it ourselves.
-
 rm -rf $RPM_BUILD_ROOT
-%{__mkdir_p} $RPM_BUILD_ROOT/%{_includedir}/mozldap
-%{__mkdir_p} $RPM_BUILD_ROOT/%{_libdir}
-%{__mkdir_p} $RPM_BUILD_ROOT/%{_libdir}/mozldap
+install -d $RPM_BUILD_ROOT%{_includedir}/mozldap
+install -d $RPM_BUILD_ROOT%{_libdir}
+install -d $RPM_BUILD_ROOT%{_libdir}/mozldap
 
 # Copy the binary libraries we want
-for file in libssldap50.so libprldap50.so libldap50.so
-do
-  %{__install} -m 755 mozilla/dist/lib/$file $RPM_BUILD_ROOT/%{_libdir}
+for file in libssldap50.so libprldap50.so libldap50.so; do
+	install mozilla/dist/lib/$file $RPM_BUILD_ROOT%{_libdir}
 done
 
 # Copy the binaries we want
-for file in ldapsearch ldapmodify ldapdelete ldapcmp ldapcompare
-do
-  %{__install} -m 755 mozilla/dist/bin/$file $RPM_BUILD_ROOT/%{_libdir}/mozldap
+for file in ldapsearch ldapmodify ldapdelete ldapcmp ldapcompare; do
+	install mozilla/dist/bin/$file $RPM_BUILD_ROOT%{_libdir}/mozldap
 done
 
 # Copy the include files
-for file in mozilla/dist/public/ldap/*.h
-do
-  %{__install} -m 644 $file $RPM_BUILD_ROOT/%{_includedir}/mozldap
+for file in mozilla/dist/public/ldap/*.h; do
+	install -m 644 $file $RPM_BUILD_ROOT%{_includedir}/mozldap
 done
 
 # Copy the developer files
-%{__mkdir_p} $RPM_BUILD_ROOT%{_datadir}/mozldap
+install -d $RPM_BUILD_ROOT%{_datadir}/mozldap
 cp -r mozilla/directory/c-sdk/ldap/examples $RPM_BUILD_ROOT%{_datadir}/mozldap
-%{__mkdir_p} $RPM_BUILD_ROOT%{_datadir}/mozldap%{_sysconfdir}
-%{__install} -m 644 mozilla/directory/c-sdk/ldap/examples/xmplflt.conf $RPM_BUILD_ROOT%{_datadir}/mozldap%{_sysconfdir}
-%{__install} -m 644 mozilla/directory/c-sdk/ldap/libraries/libldap/ldaptemplates.conf $RPM_BUILD_ROOT%{_datadir}/mozldap%{_sysconfdir}
-%{__install} -m 644 mozilla/directory/c-sdk/ldap/libraries/libldap/ldapfilter.conf $RPM_BUILD_ROOT%{_datadir}/mozldap%{_sysconfdir}
-%{__install} -m 644 mozilla/directory/c-sdk/ldap/libraries/libldap/ldapsearchprefs.conf $RPM_BUILD_ROOT%{_datadir}/mozldap%{_sysconfdir}
+install -d $RPM_BUILD_ROOT%{_datadir}/mozldap%{_sysconfdir}
+install mozilla/directory/c-sdk/ldap/examples/xmplflt.conf $RPM_BUILD_ROOT%{_datadir}/mozldap%{_sysconfdir}
+install mozilla/directory/c-sdk/ldap/libraries/libldap/ldaptemplates.conf $RPM_BUILD_ROOT%{_datadir}/mozldap%{_sysconfdir}
+install mozilla/directory/c-sdk/ldap/libraries/libldap/ldapfilter.conf $RPM_BUILD_ROOT%{_datadir}/mozldap%{_sysconfdir}
+install mozilla/directory/c-sdk/ldap/libraries/libldap/ldapsearchprefs.conf $RPM_BUILD_ROOT%{_datadir}/mozldap%{_sysconfdir}
 
 # Rename the libraries and create the symlinks
-cd $RPM_BUILD_ROOT/%{_libdir}
-for file in libssldap50.so libprldap50.so libldap50.so
-do
-  mv $file $file.${major}.${minor}
-  ln -s $file.${major}.%{minor} $file.${major}
-  ln -s $file.${major} $file
+cd $RPM_BUILD_ROOT%{_libdir}
+for file in libssldap50.so libprldap50.so libldap50.so; do
+	mv $file $file.%{major}.${minor}
+	ln -s $file.%{major}.%{minor} $file.%{major}
+	ln -s $file.%{major} $file
 done
 
 %clean
-%{__rm} -rf $RPM_BUILD_ROOT
+rm -rf $RPM_BUILD_ROOT
 
-%post
-/sbin/ldconfig >/dev/null 2>/dev/null
-
-%postun
-/sbin/ldconfig >/dev/null 2>/dev/null
+%post -p /sbin/ldconfig
+%postun -p /sbin/ldconfig
 
 %files
 %defattr(644,root,root,755)
 %{_libdir}/libssldap50.so
 %{_libdir}/libprldap50.so
 %{_libdir}/libldap50.so
-%{_libdir}/libssldap50.so.%{major}
-%{_libdir}/libprldap50.so.%{major}
-%{_libdir}/libldap50.so.%{major}
-%{_libdir}/libssldap50.so.%{major}.%{minor}
-%{_libdir}/libprldap50.so.%{major}.%{minor}
-%{_libdir}/libldap50.so.%{major}.%{minor}
+%attr(755,root,root) %{_libdir}/libssldap50.so.%{major}
+%attr(755,root,root) %{_libdir}/libprldap50.so.%{major}
+%attr(755,root,root) %{_libdir}/libldap50.so.%{major}
+%attr(755,root,root) %{_libdir}/libssldap50.so.%{major}.%{minor}
+%attr(755,root,root) %{_libdir}/libprldap50.so.%{major}.%{minor}
+%attr(755,root,root) %{_libdir}/libldap50.so.%{major}.%{minor}
 
 %files tools
 %defattr(644,root,root,755)
@@ -195,6 +168,6 @@ done
 
 %files devel
 %defattr(644,root,root,755)
-%{_libdir}/pkgconfig/mozldap.pc
+%{_pkgconfigdir}/mozldap.pc
 %{_includedir}/mozldap
 %{_datadir}/mozldap
