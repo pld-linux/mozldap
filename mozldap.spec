@@ -48,7 +48,19 @@ Requires:	mozldap = %{version}-%{release}
 
 %description devel
 Header and Library files for doing development with the Mozilla LDAP C
-SDK
+SDK.
+
+%package static
+Summary:	Static Mozilla LDAP C SDK libraries
+Summary(pl):	Statyczne biblioteki Mozilla LDAP C SDK
+Group:		Development/Libraries
+Requires:	mozldap-devel = %{version}-%{release}
+
+%description static
+Static Mozilla LDAP C SDK libraries.
+
+%description static -l pl
+Statyczne biblioteki Mozilla LDAP C SDK.
 
 %prep
 %setup -q -n mozilla
@@ -95,7 +107,7 @@ export USE_64
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{_includedir},%{_libdir}}/mozldap
 
-install dist/lib/lib*ldap*.so* $RPM_BUILD_ROOT%{_libdir}
+install dist/lib/lib*ldap* $RPM_BUILD_ROOT%{_libdir}
 install dist/bin/ldap* $RPM_BUILD_ROOT%{_libdir}/mozldap
 install dist/public/ldap/*.h $RPM_BUILD_ROOT%{_includedir}/mozldap
 
@@ -146,3 +158,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/mozldap
 %{_datadir}/mozldap
 %{_libdir}/lib*.so
+
+%files static
+%defattr(644,root,root,755)
+%{_libdir}/lib*.a
