@@ -9,7 +9,7 @@ Summary:	Mozilla LDAP C SDK
 Summary(pl):	Mozilla LDAP C SDK
 Name:		mozldap
 Version:	%{major}.%{minor}
-Release:	0.1
+Release:	0.2
 License:	MPL/GPL/LGPL
 Group:		System
 Source0:	ftp://ftp.mozilla.org/pub/mozilla.org/directory/c-sdk/releases/v%{major}.17/src/ldapcsdk-5.1.7.tar.gz
@@ -107,9 +107,10 @@ export USE_64
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{_includedir},%{_libdir}}/mozldap
 
-install dist/lib/lib*ldap* $RPM_BUILD_ROOT%{_libdir}
+install dist/lib/lib*ldap*.so $RPM_BUILD_ROOT%{_libdir}
 install dist/bin/ldap* $RPM_BUILD_ROOT%{_libdir}/mozldap
 install dist/public/ldap/*.h $RPM_BUILD_ROOT%{_includedir}/mozldap
+install directory/c-sdk/ldap/libraries/lib*/lib*50.a $RPM_BUILD_ROOT%{_libdir}
 
 install -d $RPM_BUILD_ROOT%{_datadir}/mozldap%{_sysconfdir}
 cd directory/c-sdk/ldap
