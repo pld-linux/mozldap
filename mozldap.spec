@@ -66,17 +66,14 @@ Statyczne biblioteki Mozilla LDAP C SDK.
 %setup -q -n mozilla
 
 %build
-%ifarch x86_64 ppc64 ia64 s390x
+%ifarch %{x8664} ia64 ppc64 s390x
 arg64="--enable-64bit"
 %endif
 
 # build local svrcore
-cd security/coreconf
-%{__make}
-cd ../../security/svrcore
-%{__make} \
+%{__make} -C security/coreconf
+%{__make} -C security/svrcore \
 	CFLAGS="%{rpmcflags} -I. -I/usr/include/nspr -I/usr/include/nss"
-cd ../..
 # end svrcore
 
 cd directory/c-sdk
@@ -92,7 +89,7 @@ cd directory/c-sdk
 	--enable-optimize \
 	--disable-debug
 
-%ifarch x86_64 ppc64 ia64 s390x
+%ifarch %{x8664} ppc64 ia64 s390x
 USE_64=1
 export USE_64
 %endif
@@ -141,8 +138,8 @@ done
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%post -p /sbin/ldconfig
-%postun -p /sbin/ldconfig
+%post	-p /sbin/ldconfig
+%postun	-p /sbin/ldconfig
 
 %files
 %defattr(644,root,root,755)
@@ -151,14 +148,15 @@ rm -rf $RPM_BUILD_ROOT
 
 %files tools
 %defattr(644,root,root,755)
+%dir %{_libdir}/mozldap
 %attr(755,root,root) %{_libdir}/mozldap/ldap*
 
 %files devel
 %defattr(644,root,root,755)
-%{_pkgconfigdir}/mozldap.pc
+%attr(755,root,root) %{_libdir}/lib*.so
 %{_includedir}/mozldap
+%{_pkgconfigdir}/mozldap.pc
 %{_datadir}/mozldap
-%{_libdir}/lib*.so
 
 %files static
 %defattr(644,root,root,755)
