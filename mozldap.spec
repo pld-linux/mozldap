@@ -6,12 +6,12 @@
 %define	major		5
 %define	minor		17
 Summary:	Mozilla LDAP C SDK
-Summary(pl):	Mozilla LDAP C SDK
+Summary(pl):	Biblioteki Mozilla LDAP C SDK
 Name:		mozldap
 Version:	%{major}.%{minor}
 Release:	0.2
 License:	MPL/GPL/LGPL
-Group:		System
+Group:		Libraries
 Source0:	ftp://ftp.mozilla.org/pub/mozilla.org/directory/c-sdk/releases/v%{major}.17/src/ldapcsdk-5.1.7.tar.gz
 # Source0-md5:	66ddb43e984c0df67e21afb4dc6977b1
 URL:		http://www.mozilla.org/directory/csdk.html
@@ -32,23 +32,39 @@ to communicate with LDAP directory servers. These libraries are
 derived from the University of Michigan and Netscape LDAP libraries.
 They use Mozilla NSPR and NSS for crypto.
 
+%description -l pl
+Mozilla LDAP C SDK to zestaw bibliotek pozwalaj±cych aplikacjom
+komunikowaæ siê z serwerami us³ug katalogowych LDAP. Biblioteki te
+wywodz± siê z bibliotek LDAP University of Michigan i Netscape.
+Wykorzystuj± biblioteki Mozilla NSPR i NSS do kryptografii.
+
 %package tools
 Summary:	Tools for the Mozilla LDAP C SDK
-Group:		System
+Summary(pl):	Narzêdzia dla bibliotek Mozilla LDAP C SDK
+Group:		Applications/System
 Requires:	mozldap = %{version}-%{release}
 
 %description tools
 The mozldap-tools package provides the ldapsearch, ldapmodify, and
 ldapdelete tools that use the Mozilla LDAP C SDK libraries.
 
+%description tools -l pl
+Ten pakiet dostarcza narzêdzia ldapsearch, ldapmodify i ldapdelete
+wykorzystuj±ce biblioteki Mozilla LDAP C SDK.
+
 %package devel
-Summary:	Development libraries and examples for Mozilla LDAP C SDK
+Summary:	Development files and examples for Mozilla LDAP C SDK
+Summary(pl):	Pliki programistyczne i przyk³ady dla bibliotek Mozilla LDAP C SDK
 Group:		Development/Libraries
 Requires:	mozldap = %{version}-%{release}
 
 %description devel
-Header and Library files for doing development with the Mozilla LDAP C
+Header and other files for doing development with the Mozilla LDAP C
 SDK.
+
+%description devel -l pl
+Pliki nag³ówkowe i inne do tworzenia oprogramowania z u¿yciem
+bibliotek Mozilla LDAP C SDK
 
 %package static
 Summary:	Static Mozilla LDAP C SDK libraries
@@ -66,10 +82,6 @@ Statyczne biblioteki Mozilla LDAP C SDK.
 %setup -q -n mozilla
 
 %build
-%ifarch %{x8664} ia64 ppc64 s390x
-arg64="--enable-64bit"
-%endif
-
 # build local svrcore
 %{__make} -C security/coreconf
 %{__make} -C security/svrcore \
@@ -77,7 +89,12 @@ arg64="--enable-64bit"
 # end svrcore
 
 cd directory/c-sdk
-%configure $arg64 \
+%configure \
+%ifarch %{x8664} ia64 ppc64 s390x
+	--enable-64bit \
+%endif
+	--disable-debug \
+	--enable-optimize \
 	--with-nspr \
 	--with-nspr-inc=%{_includedir}/nspr \
 	--with-nspr-lib=%{_libdir} \
@@ -85,9 +102,7 @@ cd directory/c-sdk
 	--with-nss-inc=%{_includedir}/nss \
 	--with-nss-lib=%{_libdir} \
 	--with-svrcore \
-	--with-svrcore-inc=$PWD/../../security/svrcore \
-	--enable-optimize \
-	--disable-debug
+	--with-svrcore-inc=$PWD/../../security/svrcore
 
 %ifarch %{x8664} ppc64 ia64 s390x
 USE_64=1
