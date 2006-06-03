@@ -25,6 +25,8 @@ Requires:	nspr >= %{nspr_evr}
 Requires:	nss >= %{nss_evr}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
+%define		_noautoreqdep	libldap50.so libprldap50.so libssldap50.so
+
 %description
 The Mozilla LDAP C SDK is a set of libraries that allow applications
 to communicate with LDAP directory servers. These libraries are
