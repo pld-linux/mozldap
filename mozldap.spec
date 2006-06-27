@@ -2,16 +2,16 @@
 %define	nspr_evr	1:%{nspr_version}
 %define	nss_version	3.11
 %define	nss_evr		1:%{nss_version}
-%define	svrcore_version	4.0.1
+%define	svrcore_version	4.0.2
 %define	mozldap_version	5.17
 Summary:	Mozilla LDAP C SDK
 Summary(pl):	Biblioteki Mozilla LDAP C SDK
 Name:		mozldap
-Version:	%{mozldap_version}
-Release:	1
+Version:	5.17
+Release:	2
 License:	MPL v1.1 or GPL v2+ or LGPL v2.1+
 Group:		Libraries
-Source0:	ftp://ftp.mozilla.org/pub/mozilla.org/directory/c-sdk/releases/v%{mozldap_version}/src/ldapcsdk-5.1.7.tar.gz
+Source0:	ftp://ftp.mozilla.org/pub/mozilla.org/directory/c-sdk/releases/v%{version}/src/ldapcsdk-5.1.7.tar.gz
 # Source0-md5:	66ddb43e984c0df67e21afb4dc6977b1
 URL:		http://www.mozilla.org/directory/csdk.html
 BuildRequires:	gawk
@@ -20,7 +20,7 @@ BuildRequires:	nspr-devel >= %{nspr_evr}
 BuildRequires:	nss-devel >= %{nss_evr}
 BuildRequires:	perl-base
 BuildRequires:	pkgconfig
-#BuildRequires:	svrcore-devel >= %{svrcore_version}
+BuildRequires:	svrcore-devel >= %{svrcore_version}
 Requires:	nspr >= %{nspr_evr}
 Requires:	nss >= %{nss_evr}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -43,7 +43,7 @@ Wykorzystuj± biblioteki Mozilla NSPR i NSS do kryptografii.
 Summary:	Development files and examples for Mozilla LDAP C SDK
 Summary(pl):	Pliki programistyczne i przyk³ady dla bibliotek Mozilla LDAP C SDK
 Group:		Development/Libraries
-Requires:	%{name} = %{mozldap_version}-%{release}
+Requires:	%{name} = %{version}-%{release}
 Requires:	nspr-devel >= %{nspr_evr}
 Requires:	nss-devel >= %{nss_evr}
 
@@ -59,7 +59,7 @@ bibliotek Mozilla LDAP C SDK
 Summary:	Static Mozilla LDAP C SDK libraries
 Summary(pl):	Statyczne biblioteki Mozilla LDAP C SDK
 Group:		Development/Libraries
-Requires:	%{name}-devel = %{mozldap_version}-%{release}
+Requires:	%{name}-devel = %{version}-%{release}
 
 %description static
 Static Mozilla LDAP C SDK libraries.
@@ -71,7 +71,7 @@ Statyczne biblioteki Mozilla LDAP C SDK.
 Summary:	Tools for the Mozilla LDAP C SDK
 Summary(pl):	Narzêdzia dla bibliotek Mozilla LDAP C SDK
 Group:		Applications/System
-Requires:	%{name} = %{mozldap_version}-%{release}
+Requires:	%{name} = %{version}-%{release}
 
 %description tools
 The mozldap-tools package provides the ldapsearch, ldapmodify, and
@@ -81,40 +81,10 @@ ldapdelete tools that use the Mozilla LDAP C SDK libraries.
 Ten pakiet dostarcza narzêdzia ldapsearch, ldapmodify i ldapdelete
 wykorzystuj±ce biblioteki Mozilla LDAP C SDK.
 
-%package -n svrcore-devel
-Summary:	svrcore - development files for secure PIN handling using NSS crypto
-Summary(pl):	svrcore - pliki programistyczne do bezpiecznej obs³ugi PIN-ów przy u¿yciu NSS
-Version:	%{svrcore_version}
-Group:		Development/Libraries
-Requires:	nspr-devel >= %{nspr_evr}
-Requires:	nss-devel >= %{nss_evr}
-
-%description -n svrcore-devel
-svrcore provides applications with several ways to handle secure PIN
-storage e.g. in an application that must be restarted, but needs the
-PIN to unlock the private key and other crypto material, without user
-intervention. svrcore uses the facilities provided by NSS.
-
-%description -n svrcore-devel -l pl
-svrcore udostêpnia aplikacjom kilka sposobów obs³ugi bezpiecznego
-przechowywania PIN-ów, np. w aplikacji, która musi byæ zrestartowana,
-ale wymaga PIN-u do odblokowania klucza prywatnego i innych danych
-kryptograficznych bez interwencji u¿ytkownika. svrcore wykorzystuje
-funkcje udostêpniane przez bibliotekê NSS.
-
 %prep
 %setup -q -n mozilla
 
 %build
-# build local svrcore
-%{__make} -C security/coreconf \
-	CC="%{__cc}" \
-	CFLAGS="%{rpmcflags}"
-%{__make} -C security/svrcore \
-	CC="%{__cc}" \
-	CFLAGS="%{rpmcflags} -I. -I/usr/include/nspr -I/usr/include/nss"
-# end svrcore
-
 cd directory/c-sdk
 %configure \
 %ifarch %{x8664} ia64 ppc64 s390x
@@ -129,7 +99,7 @@ cd directory/c-sdk
 	--with-nss-inc=%{_includedir}/nss \
 	--with-nss-lib=%{_libdir} \
 	--with-svrcore \
-	--with-svrcore-inc=$PWD/../../security/svrcore
+	--with-svrcore-inc=%{_includedir}/svrcore
 
 %ifarch %{x8664} ppc64 ia64 s390x
 USE_64=1
@@ -166,29 +136,14 @@ sed directory/c-sdk/mozldap.pc.in -e "
 	s,%%includedir%%,%{_includedir}/mozldap,g
 	s,%%NSPR_VERSION%%,%{nspr_version},g
 	s,%%NSS_VERSION%%,%{nss_version},g
-	s,%%MOZLDAP_VERSION%%,%{mozldap_version},g
+	s,%%MOZLDAP_VERSION%%,%{version},g
 " > $RPM_BUILD_ROOT%{_pkgconfigdir}/mozldap.pc
 
 cd $RPM_BUILD_ROOT%{_libdir}
 for file in libssldap50.so libprldap50.so libldap50.so; do
-	mv $file $file.%{mozldap_version}
-	ln -s $file.%{mozldap_version} $file
+	mv $file $file.%{version}
+	ln -s $file.%{version} $file
 done
-cd -
-
-# svrcore
-install -d $RPM_BUILD_ROOT%{_includedir}/svrcore
-install dist/public/svrcore/*.h $RPM_BUILD_ROOT%{_includedir}/svrcore
-install dist/*.OBJ/lib/libsvrcore.a $RPM_BUILD_ROOT%{_libdir}
-sed security/svrcore/svrcore.pc.in -e "
-	s,%%libdir%%,%{_libdir},g
-	s,%%prefix%%,%{_prefix},g
-	s,%%exec_prefix%%,%{_prefix},g
-	s,%%includedir%%,%{_includedir}/svrcore,g
-	s,%%NSPR_VERSION%%,%{nspr_version},g
-	s,%%NSS_VERSION%%,%{nss_version},g
-	s,%%SVRCORE_VERSION%%,%{svrcore_version},g
-" > $RPM_BUILD_ROOT%{_pkgconfigdir}/svrcore.pc
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -219,10 +174,3 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %dir %{_libdir}/mozldap
 %attr(755,root,root) %{_libdir}/mozldap/ldap*
-
-%files -n svrcore-devel
-%defattr(644,root,root,755)
-%doc security/svrcore/README
-%{_libdir}/libsvrcore.a
-%{_includedir}/svrcore
-%{_pkgconfigdir}/svrcore.pc
