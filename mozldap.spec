@@ -82,10 +82,10 @@ Ten pakiet dostarcza narzêdzia ldapsearch, ldapmodify i ldapdelete
 wykorzystuj±ce biblioteki Mozilla LDAP C SDK.
 
 %prep
-%setup -q -n mozilla
+%setup -q -c
 
 %build
-cd directory/c-sdk
+cd mozilla/directory/c-sdk
 %configure \
 %ifarch %{x8664} ia64 ppc64 s390x
 	--enable-64bit \
@@ -116,6 +116,7 @@ export USE_64
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{_includedir},%{_libdir}}/mozldap
 
+cd mozilla
 install dist/lib/lib*ldap*.so $RPM_BUILD_ROOT%{_libdir}
 install dist/bin/ldap* $RPM_BUILD_ROOT%{_libdir}/mozldap
 install dist/public/ldap/*.h $RPM_BUILD_ROOT%{_includedir}/mozldap
