@@ -3,17 +3,18 @@
 %define	nss_version	3.11
 %define	nss_evr		1:%{nss_version}
 %define	svrcore_version	4.0.2
-%define	mozldap_version	5.17
 Summary:	Mozilla LDAP C SDK
 Summary(pl):	Biblioteki Mozilla LDAP C SDK
 Name:		mozldap
-Version:	5.17
-Release:	2
+Version:	6.0.0
+Release:	1
 License:	MPL v1.1 or GPL v2+ or LGPL v2.1+
 Group:		Libraries
-Source0:	ftp://ftp.mozilla.org/pub/mozilla.org/directory/c-sdk/releases/v%{version}/src/ldapcsdk-5.1.7.tar.gz
-# Source0-md5:	66ddb43e984c0df67e21afb4dc6977b1
+Source0:	ftp://ftp.mozilla.org/pub/mozilla.org/directory/c-sdk/releases/v%{version}/src/mozldap6-%{version}.tar.gz
+# Source0-md5:	d2144e247e11c2a610a3ab044f8ad06c
 URL:		http://www.mozilla.org/directory/csdk.html
+BuildRequires:	autoconf >= 2.13
+BuildRequires:	cyrus-sasl-devel >= 2.0
 BuildRequires:	gawk
 BuildRequires:	libstdc++-devel
 BuildRequires:	nspr-devel >= %{nspr_evr}
@@ -25,7 +26,7 @@ Requires:	nspr >= %{nspr_evr}
 Requires:	nss >= %{nss_evr}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
-%define		_noautoreqdep	libldap50.so libprldap50.so libssldap50.so
+%define		_noautoreqdep	libldap60.so libprldap60.so libssldap60.so
 
 %description
 The Mozilla LDAP C SDK is a set of libraries that allow applications
@@ -82,24 +83,24 @@ Ten pakiet dostarcza narzêdzia ldapsearch, ldapmodify i ldapdelete
 wykorzystuj±ce biblioteki Mozilla LDAP C SDK.
 
 %prep
-%setup -q -c
+%setup -q -n mozldap6-%{version}
 
 %build
 cd mozilla/directory/c-sdk
+%{__autoconf}
 %configure \
 %ifarch %{x8664} ia64 ppc64 s390x
 	--enable-64bit \
 %endif
 	--disable-debug \
+	--enable-clu \
 	--enable-optimize \
-	--with-nspr \
-	--with-nspr-inc=%{_includedir}/nspr \
-	--with-nspr-lib=%{_libdir} \
-	--with-nss \
-	--with-nss-inc=%{_includedir}/nss \
-	--with-nss-lib=%{_libdir} \
+	--with-sasl \
 	--with-svrcore \
-	--with-svrcore-inc=%{_includedir}/svrcore
+	--with-svrcore-inc=%{_includedir}/svrcore \
+	--with-system-nspr \
+	--with-system-nss
+#	--with-system-svrcore  doesn't work (disables svrcore-inc)
 
 %ifarch %{x8664} ppc64 ia64 s390x
 USE_64=1
@@ -107,9 +108,6 @@ export USE_64
 %endif
 
 %{__make} \
-	BUILDCLU=1 \
-	HAVE_SVRCORE=1 \
-	BUILD_OPT=1 \
 	XCFLAGS="%{rpmcflags}"
 
 %install
@@ -120,7 +118,7 @@ cd mozilla
 install dist/lib/lib*ldap*.so $RPM_BUILD_ROOT%{_libdir}
 install dist/bin/ldap* $RPM_BUILD_ROOT%{_libdir}/mozldap
 install dist/public/ldap/*.h $RPM_BUILD_ROOT%{_includedir}/mozldap
-install directory/c-sdk/ldap/libraries/lib*/lib*50.a $RPM_BUILD_ROOT%{_libdir}
+install directory/c-sdk/ldap/libraries/lib*/lib*60.a $RPM_BUILD_ROOT%{_libdir}
 
 install -d $RPM_BUILD_ROOT%{_datadir}/mozldap%{_sysconfdir}
 cd directory/c-sdk/ldap
@@ -141,7 +139,7 @@ sed directory/c-sdk/mozldap.pc.in -e "
 " > $RPM_BUILD_ROOT%{_pkgconfigdir}/mozldap.pc
 
 cd $RPM_BUILD_ROOT%{_libdir}
-for file in libssldap50.so libprldap50.so libldap50.so; do
+for file in libssldap60.so libprldap60.so libldap60.so; do
 	mv $file $file.%{version}
 	ln -s $file.%{version} $file
 done
@@ -154,9 +152,9 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/libldap50.so.*.*
-%attr(755,root,root) %{_libdir}/libprldap50.so.*.*
-%attr(755,root,root) %{_libdir}/libssldap50.so.*.*
+%attr(755,root,root) %{_libdir}/libldap60.so.*.*
+%attr(755,root,root) %{_libdir}/libprldap60.so.*.*
+%attr(755,root,root) %{_libdir}/libssldap60.so.*.*
 
 %files devel
 %defattr(644,root,root,755)
@@ -166,10 +164,10 @@ rm -rf $RPM_BUILD_ROOT
 
 %files static
 %defattr(644,root,root,755)
-%{_libdir}/libiutil50.a
-%{_libdir}/liblber50.a
-%{_libdir}/libldap50.a
-%{_libdir}/libldif50.a
+%{_libdir}/libiutil60.a
+%{_libdir}/liblber60.a
+%{_libdir}/libldap60.a
+%{_libdir}/libldif60.a
 
 %files tools
 %defattr(644,root,root,755)
