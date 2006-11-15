@@ -1,0 +1,22 @@
+--- mozldap6-6.0.0/mozilla/directory/c-sdk/config/autoconf.mk.in.orig	2006-10-03 22:43:39.000000000 +0200
++++ mozldap6-6.0.0/mozilla/directory/c-sdk/config/autoconf.mk.in	2006-11-15 14:37:35.629505000 +0100
+@@ -84,6 +84,8 @@
+ NSPR_CFLAGS	= @NSPR_CFLAGS@
+ NSPR_LIBS	= @NSPR_LIBS@
+ 
++SASL_LIBS	= @SASL_LIBS@
++
+ BUILDCLU        = @BUILDCLU@
+ 
+ AS		= @AS@
+--- mozldap6-6.0.0/mozilla/directory/c-sdk/ldap/libraries/libldap/Makefile.in.orig	2006-10-03 22:43:41.000000000 +0200
++++ mozldap6-6.0.0/mozilla/directory/c-sdk/ldap/libraries/libldap/Makefile.in	2006-11-15 14:38:05.889505000 +0100
+@@ -197,7 +197,7 @@
+ endif
+ 
+ ifeq ($(OS_ARCH), Linux)
+-EXTRA_LIBS = -L$(dist_libdir) -l$(LBER_LIBNAME) $(SASL_LINK)
++EXTRA_LIBS = -L$(dist_libdir) -l$(LBER_LIBNAME) $(SASL_LINK) -lpthread
+ endif
+ 
+ ifeq ($(OS_ARCH), WINNT)
