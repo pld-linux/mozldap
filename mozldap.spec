@@ -12,6 +12,7 @@ License:	MPL v1.1 or GPL v2+ or LGPL v2.1+
 Group:		Libraries
 Source0:	ftp://ftp.mozilla.org/pub/mozilla.org/directory/c-sdk/releases/v%{version}/src/mozldap6-%{version}.tar.gz
 # Source0-md5:	d2144e247e11c2a610a3ab044f8ad06c
+Patch0:		%{name}-link.patch
 URL:		http://www.mozilla.org/directory/csdk.html
 BuildRequires:	autoconf >= 2.13
 BuildRequires:	cyrus-sasl-devel >= 2.0
@@ -84,6 +85,7 @@ wykorzystuj±ce biblioteki Mozilla LDAP C SDK.
 
 %prep
 %setup -q -n mozldap6-%{version}
+%patch0 -p1
 
 %build
 cd mozilla/directory/c-sdk
