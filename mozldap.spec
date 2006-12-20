@@ -2,12 +2,12 @@
 %define	nspr_evr	1:%{nspr_version}
 %define	nss_version	3.11
 %define	nss_evr		1:%{nss_version}
-%define	svrcore_version	4.0.2
+%define	svrcore_version	4.0.3
 Summary:	Mozilla LDAP C SDK
 Summary(pl):	Biblioteki Mozilla LDAP C SDK
 Name:		mozldap
 Version:	6.0.0
-Release:	1
+Release:	2
 License:	MPL v1.1 or GPL v2+ or LGPL v2.1+
 Group:		Libraries
 Source0:	ftp://ftp.mozilla.org/pub/mozilla.org/directory/c-sdk/releases/v%{version}/src/mozldap6-%{version}.tar.gz
@@ -74,6 +74,7 @@ Summary:	Tools for the Mozilla LDAP C SDK
 Summary(pl):	Narzêdzia dla bibliotek Mozilla LDAP C SDK
 Group:		Applications/System
 Requires:	%{name} = %{version}-%{release}
+Requires:	svrcore >= %{svrcore_version}
 
 %description tools
 The mozldap-tools package provides the ldapsearch, ldapmodify, and
@@ -98,11 +99,9 @@ cd mozilla/directory/c-sdk
 	--enable-clu \
 	--enable-optimize \
 	--with-sasl \
-	--with-svrcore \
-	--with-svrcore-inc=%{_includedir}/svrcore \
 	--with-system-nspr \
-	--with-system-nss
-#	--with-system-svrcore  doesn't work (disables svrcore-inc)
+	--with-system-nss \
+	--with-system-svrcore
 
 %ifarch %{x8664} ppc64 ia64 s390x
 USE_64=1
