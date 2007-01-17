@@ -6,12 +6,12 @@
 Summary:	Mozilla LDAP C SDK
 Summary(pl):	Biblioteki Mozilla LDAP C SDK
 Name:		mozldap
-Version:	6.0.1
+Version:	6.0.2
 Release:	1
 License:	MPL v1.1 or GPL v2+ or LGPL v2.1+
 Group:		Libraries
 Source0:	ftp://ftp.mozilla.org/pub/mozilla.org/directory/c-sdk/releases/v%{version}/src/mozldap-%{version}.tar.gz
-# Source0-md5:	1bfcb8d4fc949a0a18e8b841235b0606
+# Source0-md5:	60d1d6fa115efe3e54974243c1958b99
 Patch0:		%{name}-link.patch
 URL:		http://www.mozilla.org/directory/csdk.html
 BuildRequires:	autoconf >= 2.13
