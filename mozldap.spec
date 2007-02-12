@@ -4,7 +4,7 @@
 %define	nss_evr		1:%{nss_version}
 %define	svrcore_version	4.0.3
 Summary:	Mozilla LDAP C SDK
-Summary(pl):	Biblioteki Mozilla LDAP C SDK
+Summary(pl.UTF-8):   Biblioteki Mozilla LDAP C SDK
 Name:		mozldap
 Version:	6.0.2
 Release:	1
@@ -35,15 +35,15 @@ to communicate with LDAP directory servers. These libraries are
 derived from the University of Michigan and Netscape LDAP libraries.
 They use Mozilla NSPR and NSS for crypto.
 
-%description -l pl
-Mozilla LDAP C SDK to zestaw bibliotek pozwalaj±cych aplikacjom
-komunikowaæ siê z serwerami us³ug katalogowych LDAP. Biblioteki te
-wywodz± siê z bibliotek LDAP University of Michigan i Netscape.
-Wykorzystuj± biblioteki Mozilla NSPR i NSS do kryptografii.
+%description -l pl.UTF-8
+Mozilla LDAP C SDK to zestaw bibliotek pozwalajÄ…cych aplikacjom
+komunikowaÄ‡ siÄ™ z serwerami usÅ‚ug katalogowych LDAP. Biblioteki te
+wywodzÄ… siÄ™ z bibliotek LDAP University of Michigan i Netscape.
+WykorzystujÄ… biblioteki Mozilla NSPR i NSS do kryptografii.
 
 %package devel
 Summary:	Development files and examples for Mozilla LDAP C SDK
-Summary(pl):	Pliki programistyczne i przyk³ady dla bibliotek Mozilla LDAP C SDK
+Summary(pl.UTF-8):   Pliki programistyczne i przykÅ‚ady dla bibliotek Mozilla LDAP C SDK
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 Requires:	nspr-devel >= %{nspr_evr}
@@ -53,25 +53,25 @@ Requires:	nss-devel >= %{nss_evr}
 Header and other files for doing development with the Mozilla LDAP C
 SDK.
 
-%description devel -l pl
-Pliki nag³ówkowe i inne do tworzenia oprogramowania z u¿yciem
+%description devel -l pl.UTF-8
+Pliki nagÅ‚Ã³wkowe i inne do tworzenia oprogramowania z uÅ¼yciem
 bibliotek Mozilla LDAP C SDK
 
 %package static
 Summary:	Static Mozilla LDAP C SDK libraries
-Summary(pl):	Statyczne biblioteki Mozilla LDAP C SDK
+Summary(pl.UTF-8):   Statyczne biblioteki Mozilla LDAP C SDK
 Group:		Development/Libraries
 Requires:	%{name}-devel = %{version}-%{release}
 
 %description static
 Static Mozilla LDAP C SDK libraries.
 
-%description static -l pl
+%description static -l pl.UTF-8
 Statyczne biblioteki Mozilla LDAP C SDK.
 
 %package tools
 Summary:	Tools for the Mozilla LDAP C SDK
-Summary(pl):	Narzêdzia dla bibliotek Mozilla LDAP C SDK
+Summary(pl.UTF-8):   NarzÄ™dzia dla bibliotek Mozilla LDAP C SDK
 Group:		Applications/System
 Requires:	%{name} = %{version}-%{release}
 Requires:	svrcore >= %{svrcore_version}
@@ -80,9 +80,9 @@ Requires:	svrcore >= %{svrcore_version}
 The mozldap-tools package provides the ldapsearch, ldapmodify, and
 ldapdelete tools that use the Mozilla LDAP C SDK libraries.
 
-%description tools -l pl
-Ten pakiet dostarcza narzêdzia ldapsearch, ldapmodify i ldapdelete
-wykorzystuj±ce biblioteki Mozilla LDAP C SDK.
+%description tools -l pl.UTF-8
+Ten pakiet dostarcza narzÄ™dzia ldapsearch, ldapmodify i ldapdelete
+wykorzystujÄ…ce biblioteki Mozilla LDAP C SDK.
 
 %prep
 %setup -q
