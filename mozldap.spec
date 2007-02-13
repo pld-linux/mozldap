@@ -4,7 +4,7 @@
 %define	nss_evr		1:%{nss_version}
 %define	svrcore_version	4.0.3
 Summary:	Mozilla LDAP C SDK
-Summary(pl.UTF-8):   Biblioteki Mozilla LDAP C SDK
+Summary(pl.UTF-8):	Biblioteki Mozilla LDAP C SDK
 Name:		mozldap
 Version:	6.0.2
 Release:	1
@@ -43,7 +43,7 @@ Wykorzystują biblioteki Mozilla NSPR i NSS do kryptografii.
 
 %package devel
 Summary:	Development files and examples for Mozilla LDAP C SDK
-Summary(pl.UTF-8):   Pliki programistyczne i przykłady dla bibliotek Mozilla LDAP C SDK
+Summary(pl.UTF-8):	Pliki programistyczne i przykłady dla bibliotek Mozilla LDAP C SDK
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 Requires:	nspr-devel >= %{nspr_evr}
@@ -59,7 +59,7 @@ bibliotek Mozilla LDAP C SDK
 
 %package static
 Summary:	Static Mozilla LDAP C SDK libraries
-Summary(pl.UTF-8):   Statyczne biblioteki Mozilla LDAP C SDK
+Summary(pl.UTF-8):	Statyczne biblioteki Mozilla LDAP C SDK
 Group:		Development/Libraries
 Requires:	%{name}-devel = %{version}-%{release}
 
@@ -71,7 +71,7 @@ Statyczne biblioteki Mozilla LDAP C SDK.
 
 %package tools
 Summary:	Tools for the Mozilla LDAP C SDK
-Summary(pl.UTF-8):   Narzędzia dla bibliotek Mozilla LDAP C SDK
+Summary(pl.UTF-8):	Narzędzia dla bibliotek Mozilla LDAP C SDK
 Group:		Applications/System
 Requires:	%{name} = %{version}-%{release}
 Requires:	svrcore >= %{svrcore_version}
