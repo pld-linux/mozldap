@@ -1,5 +1,3 @@
-# TODO
-# - mv /usr/share/mozldap/examples to %{_examplesdir} ?
 %define	nspr_version	4.6
 %define	nspr_evr	1:%{nspr_version}
 %define	nss_version	3.11
@@ -12,7 +10,7 @@ Version:	6.0.5
 Release:	1
 License:	MPL v1.1 or GPL v2+ or LGPL v2.1+
 Group:		Libraries
-Source0:	ftp://ftp.mozilla.org/pub/mozilla.org/directory/c-sdk/releases/v%{version}/src/mozldap-%{version}.tar.gz
+Source0:	ftp://ftp.mozilla.org/pub/mozilla.org/directory/c-sdk/releases/v%{version}/src/%{name}-%{version}.tar.gz
 # Source0-md5:	9719bd5b9efc13f810c85a47fb8c6412
 Patch0:		%{name}-link.patch
 URL:		http://wiki.mozilla.org/LDAP_C_SDK
@@ -29,7 +27,7 @@ Requires:	nspr >= %{nspr_evr}
 Requires:	nss >= %{nss_evr}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
-%define		_noautoreqdep	libldap60.so libprldap60.so libssldap60.so
+%define		_noautoreqdep	libldap60.so libprldap60.so libssldap60.so libldif60.so
 
 %description
 The Mozilla LDAP C SDK is a set of libraries that allow applications
@@ -115,19 +113,19 @@ export USE_64
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_includedir},%{_libdir}}/mozldap
+install -d $RPM_BUILD_ROOT{{%{_includedir},%{_libdir}}/mozldap,%{_bindir},%{_sysconfdir}/%{name}}
 
 cd mozilla
-install dist/lib/lib*ldap*.so $RPM_BUILD_ROOT%{_libdir}
-install dist/bin/ldap* $RPM_BUILD_ROOT%{_libdir}/mozldap
+install dist/lib/lib*.so $RPM_BUILD_ROOT%{_libdir}
+install dist/lib/lib*.a $RPM_BUILD_ROOT%{_libdir}
 install dist/public/ldap/*.h $RPM_BUILD_ROOT%{_includedir}/mozldap
-install directory/c-sdk/ldap/libraries/lib*/lib*60.a $RPM_BUILD_ROOT%{_libdir}
+install dist/bin/ldap* $RPM_BUILD_ROOT%{_bindir}
+# what really uses these and proper install dir?
+install dist/etc/* $RPM_BUILD_ROOT%{_sysconfdir}/%{name}
 
-install -d $RPM_BUILD_ROOT%{_datadir}/mozldap%{_sysconfdir}
+install -d $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
 cd directory/c-sdk/ldap
-cp -r examples $RPM_BUILD_ROOT%{_datadir}/mozldap
-install examples/xmplflt.conf $RPM_BUILD_ROOT%{_datadir}/mozldap%{_sysconfdir}
-install libraries/libldap/*.conf $RPM_BUILD_ROOT%{_datadir}/mozldap%{_sysconfdir}
+cp -a examples/* $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
 cd -
 
 install -d $RPM_BUILD_ROOT%{_pkgconfigdir}
@@ -142,7 +140,7 @@ sed directory/c-sdk/mozldap.pc.in -e "
 " > $RPM_BUILD_ROOT%{_pkgconfigdir}/mozldap.pc
 
 cd $RPM_BUILD_ROOT%{_libdir}
-for file in libssldap60.so libprldap60.so libldap60.so; do
+for file in lib*.so; do
 	mv $file $file.%{version}
 	ln -s $file.%{version} $file
 done
@@ -161,12 +159,14 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %ghost %{_libdir}/libprldap60.so
 %attr(755,root,root) %{_libdir}/libssldap60.so.*.*
 %attr(755,root,root) %ghost %{_libdir}/libssldap60.so
+%attr(755,root,root) %{_libdir}/libldif60.so.*.*
+%attr(755,root,root) %ghost %{_libdir}/libldif60.so
 
 %files devel
 %defattr(644,root,root,755)
 %{_includedir}/mozldap
 %{_pkgconfigdir}/mozldap.pc
-%{_datadir}/mozldap
+%{_examplesdir}/%{name}-%{version}
 
 %files static
 %defattr(644,root,root,755)
@@ -177,5 +177,15 @@ rm -rf $RPM_BUILD_ROOT
 
 %files tools
 %defattr(644,root,root,755)
-%dir %{_libdir}/mozldap
-%attr(755,root,root) %{_libdir}/mozldap/ldap*
+%dir %{_sysconfdir}/%{name}
+%{_sysconfdir}/%{name}/ldapfilter.conf
+%{_sysconfdir}/%{name}/ldapfriendly
+%{_sysconfdir}/%{name}/ldapsearchprefs.conf
+%{_sysconfdir}/%{name}/ldaptemplates.conf
+# NOTE: these probably collide with openldap
+%attr(755,root,root) %{_bindir}/ldapcmp
+%attr(755,root,root) %{_bindir}/ldapcompare
+%attr(755,root,root) %{_bindir}/ldapdelete
+%attr(755,root,root) %{_bindir}/ldapmodify
+%attr(755,root,root) %{_bindir}/ldappasswd
+%attr(755,root,root) %{_bindir}/ldapsearch
