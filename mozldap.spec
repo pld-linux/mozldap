@@ -1,3 +1,5 @@
+# TODO
+# - mv /usr/share/mozldap/examples to %{_examplesdir} ?
 %define	nspr_version	4.6
 %define	nspr_evr	1:%{nspr_version}
 %define	nss_version	3.11
