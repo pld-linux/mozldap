@@ -13,7 +13,7 @@ Group:		Libraries
 Source0:	ftp://ftp.mozilla.org/pub/mozilla.org/directory/c-sdk/releases/v%{version}/src/mozldap-%{version}.tar.gz
 # Source0-md5:	9719bd5b9efc13f810c85a47fb8c6412
 Patch0:		%{name}-link.patch
-URL:		http://www.mozilla.org/directory/csdk.html
+URL:		http://wiki.mozilla.org/LDAP_C_SDK
 BuildRequires:	autoconf >= 2.13
 BuildRequires:	cyrus-sasl-devel >= 2.0
 BuildRequires:	gawk
