@@ -1,3 +1,5 @@
+# TODO
+# - ./config.status creation broken (libtool2 problem likely) on th/ti
 %define	nspr_version	4.6
 %define	nspr_evr	1:%{nspr_version}
 %define	nss_version	3.11
