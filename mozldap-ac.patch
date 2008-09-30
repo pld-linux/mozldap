@@ -1,6 +1,6 @@
---- mozldap-6.0.5/mozilla/directory/c-sdk/configure.in.orig	2007-09-17 19:46:23.000000000 +0200
-+++ mozldap-6.0.5/mozilla/directory/c-sdk/configure.in	2008-06-19 00:42:22.810015812 +0200
-@@ -2625,7 +2625,13 @@
+--- mozldap-6.0.6/mozilla/directory/c-sdk/configure.in.orig	2008-09-11 16:38:34.000000000 +0200
++++ mozldap-6.0.6/mozilla/directory/c-sdk/configure.in	2008-10-01 00:33:21.974636497 +0200
+@@ -2621,7 +2621,13 @@
  dnl ========================================================
  dnl Generate output files.
  dnl ========================================================
@@ -15,7 +15,7 @@
  Makefile
  config/Makefile
  config/autoconf.mk
-@@ -2640,11 +2646,4 @@
+@@ -2636,13 +2642,4 @@
  ldap/libraries/libiutil/Makefile
  ldap/libraries/libssldap/Makefile
  ldap/libraries/libutil/Makefile
@@ -25,6 +25,8 @@
 -dnl structure for us..
 -mkdir ldap > /dev/null 2>&1
 -mkdir ldap/clients > /dev/null 2>&1
+-
+-echo $MAKEFILES > unallmakefiles
 -
 -AC_OUTPUT([$MAKEFILES])
 +])
