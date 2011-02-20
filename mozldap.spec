@@ -6,12 +6,12 @@
 Summary:	Mozilla LDAP C SDK
 Summary(pl.UTF-8):	Biblioteki Mozilla LDAP C SDK
 Name:		mozldap
-Version:	6.0.6
+Version:	6.0.7
 Release:	1
 License:	MPL v1.1 or GPL v2+ or LGPL v2.1+
 Group:		Libraries
 Source0:	http://ftp.mozilla.org/pub/mozilla.org/directory/c-sdk/releases/v%{version}/src/%{name}-%{version}.tar.gz
-# Source0-md5:	1d6ddb80a7435ba117c6d9336b8ba21a
+# Source0-md5:	6e1b8ace4931a6839fe4cb027d23b5ac
 Patch0:		%{name}-link.patch
 Patch1:		%{name}-ac.patch
 URL:		http://wiki.mozilla.org/LDAP_C_SDK
@@ -87,11 +87,12 @@ wykorzystujące biblioteki Mozilla LDAP C SDK.
 
 %prep
 %setup -q
-%patch0 -p1
-%patch1 -p1
+%patch0 -p3
+%patch1 -p3
 
 %build
-cd mozilla/directory/c-sdk
+DISTDIR=$(pwd)/dist
+cd c-sdk
 %{__autoconf}
 %configure \
 %ifarch %{x8664} ia64 ppc64 s390x
@@ -100,6 +101,7 @@ cd mozilla/directory/c-sdk
 	--disable-debug \
 	--enable-clu \
 	--enable-optimize \
+	--with-dist-prefix=$DISTDIR \
 	--with-sasl \
 	--with-system-nspr \
 	--with-system-nss \
@@ -117,7 +119,6 @@ export USE_64
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{{%{_includedir},%{_libdir}}/mozldap,%{_bindir},%{_sysconfdir}/%{name}}
 
-cd mozilla
 install dist/lib/lib*.so $RPM_BUILD_ROOT%{_libdir}
 install dist/lib/lib*.a $RPM_BUILD_ROOT%{_libdir}
 install dist/public/ldap/*.h $RPM_BUILD_ROOT%{_includedir}/mozldap
@@ -126,17 +127,19 @@ install dist/bin/ldap* $RPM_BUILD_ROOT%{_bindir}
 install dist/etc/* $RPM_BUILD_ROOT%{_sysconfdir}/%{name}
 
 install -d $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
-cd directory/c-sdk/ldap
-cp -a examples/* $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
-rm -f $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}/Makefile
-cd -
+cp -a c-sdk/ldap/examples/* $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
 
 install -d $RPM_BUILD_ROOT%{_pkgconfigdir}
-sed directory/c-sdk/mozldap.pc.in -e "
-	s,%%libdir%%,%{_libdir},g
+sed c-sdk/mozldap.pc.in -e "
 	s,%%prefix%%,%{_prefix},g
 	s,%%exec_prefix%%,%{_prefix},g
+	s,%%libdir%%,%{_libdir},g
 	s,%%includedir%%,%{_includedir}/mozldap,g
+	s,%%bindir%%,%{_bindir},g
+	s,%%major%%,6,g
+	s,%%minor%%,0,g
+	s,%%submin%%,7,g
+	s,%%libsuffix%%,60,g
 	s,%%NSPR_VERSION%%,%{nspr_version},g
 	s,%%NSS_VERSION%%,%{nss_version},g
 	s,%%MOZLDAP_VERSION%%,%{version},g
