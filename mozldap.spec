@@ -91,6 +91,7 @@ wykorzystujące biblioteki Mozilla LDAP C SDK.
 %patch1 -p3
 
 %build
+cp -f /usr/share/automake/config.sub c-sdk/config/autoconf
 DISTDIR=$(pwd)/dist
 cd c-sdk
 %{__autoconf}
