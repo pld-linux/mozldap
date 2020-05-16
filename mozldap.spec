@@ -16,6 +16,7 @@ Patch0:		%{name}-link.patch
 Patch1:		%{name}-ac.patch
 URL:		http://wiki.mozilla.org/LDAP_C_SDK
 BuildRequires:	autoconf >= 2.13
+BuildRequires:	automake
 BuildRequires:	cyrus-sasl-devel >= 2.0
 BuildRequires:	gawk
 BuildRequires:	libstdc++-devel
